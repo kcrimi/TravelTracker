@@ -27,7 +27,8 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,
-        GoogleMap.OnMapClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
+        GoogleMap.OnMapClickListener,MemoryDialogFragment.Listener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "Main Activity";
     private static final String MEMORY_DIALOG_TAG = "MemoryDialog";
@@ -91,11 +92,6 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         memory.notes = "I remember I met an old man here with a beard as long as a chair";
 
         MemoryDialogFragment.newInstance(memory).show(getFragmentManager(), MEMORY_DIALOG_TAG);
-
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                .position(latLng));
-
-        mMemories.put(marker.getId(), memory);
     }
 
     @Override
@@ -118,6 +114,19 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void OnCancelClicked(Memory memory) {
+
+    }
+
+    @Override
+    public void OnSaveClicked(Memory memory) {
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(new LatLng(memory.latitude, memory.longitude)));
+
+        mMemories.put(marker.getId(), memory);
     }
 
     private void addGoogleAPIClient(){
