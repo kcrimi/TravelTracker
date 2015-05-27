@@ -90,7 +90,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         memory.longitude = latLng.longitude;
         memory.notes = "I remember I met an old man here with a beard as long as a chair";
 
-        new MemoryDialogFragment().show(getFragmentManager(), MEMORY_DIALOG_TAG);
+        MemoryDialogFragment.newInstance(memory).show(getFragmentManager(), MEMORY_DIALOG_TAG);
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng));
