@@ -130,6 +130,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     public void onMarkerDragEnd(Marker marker) {
         Memory memory = mMemories.get(marker.getId());
         updateMemoryPosition(marker.getPosition(),memory);
+        mDataSource.updateMemory(memory);
 
     }
 

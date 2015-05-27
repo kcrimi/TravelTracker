@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by kevin on 5/26/15.
  */
 public class Memory implements Serializable{
+    long id;
     double latitude;
     double longitude;
     String city;
