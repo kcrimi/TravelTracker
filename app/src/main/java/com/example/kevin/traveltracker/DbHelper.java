@@ -39,7 +39,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE "+MEMORIES_TABLE+" (" +
                 COLUMN_ID+" INTEGER PRIMARY KEY AUTOINCREMENT," +
                 COLUMN_LATITUDE+" DOUBLE," +
-                COLUMN_LONGITUDE+" DOUBLE" +
+                COLUMN_LONGITUDE+" DOUBLE," +
                 COLUMN_CITY+" TEXT," +
                 COLUMN_COUNTRY+" TEXT," +
                 COLUMN_NOTES+" TEXT)");

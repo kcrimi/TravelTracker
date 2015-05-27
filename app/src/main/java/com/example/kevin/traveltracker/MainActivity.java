@@ -46,7 +46,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
 
         MapFragment mapFragment = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
+        mDataSource = new MemoriesDataSource(this);
     }
 
     @Override
@@ -72,6 +72,8 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapClickListener(this);
         mMap.setInfoWindowAdapter(new MarkerAdapter(getLayoutInflater(), mMemories));
+        List<Memory> memories = mDataSource.getAllMemories();
+        Log.d(TAG, "Memories are"+memories);
     }
 
     @Override
@@ -95,8 +97,6 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         memory.notes = "I remember I met an old man here with a beard as long as a chair";
 
         MemoryDialogFragment.newInstance(memory).show(getFragmentManager(), MEMORY_DIALOG_TAG);
-
-        mDataSource = new MemoriesDataSource(this);
     }
 
     @Override
