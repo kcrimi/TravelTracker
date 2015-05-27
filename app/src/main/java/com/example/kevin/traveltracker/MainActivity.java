@@ -30,6 +30,7 @@ import javax.sql.DataSource;
 
 public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,MemoryDialogFragment.Listener,
+        GoogleMap.OnMarkerDragListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "Main Activity";
@@ -72,29 +73,18 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapClickListener(this);
         mMap.setInfoWindowAdapter(new MarkerAdapter(getLayoutInflater(), mMemories));
+        mMap.setOnMarkerDragListener(this);
         List<Memory> memories = mDataSource.getAllMemories();
-        Log.d(TAG, "Memories are"+memories);
+        for ( Memory memory: memories) {
+            addMarker(memory);
+        }
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Geocoder geocoder = new Geocoder(this);
-        List<Address> matches = null;
-        try {
-            matches = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        Address bestMatch = (matches.isEmpty()) ? null : matches.get(0);
-        int maxLine = bestMatch.getMaxAddressLineIndex();
-
         Memory memory = new Memory();
-        memory.city = bestMatch.getAddressLine(maxLine - 1);
-        memory.country = bestMatch.getAddressLine(maxLine);
-        memory.latitude = latLng.latitude;
-        memory.longitude = latLng.longitude;
-        memory.notes = "I remember I met an old man here with a beard as long as a chair";
+
+        updateMemoryPosition(latLng, memory);
 
         MemoryDialogFragment.newInstance(memory).show(getFragmentManager(), MEMORY_DIALOG_TAG);
     }
@@ -127,12 +117,53 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        Memory memory = mMemories.get(marker.getId());
+        updateMemoryPosition(marker.getPosition(),memory);
+
+    }
+
+    private void updateMemoryPosition(LatLng latLng, Memory memory) {
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> matches = null;
+        try {
+            matches = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Address bestMatch = (matches.isEmpty()) ? null : matches.get(0);
+        int maxLine = bestMatch.getMaxAddressLineIndex();
+
+        memory.city = bestMatch.getAddressLine(maxLine - 1);
+        memory.country = bestMatch.getAddressLine(maxLine);
+        memory.latitude = latLng.latitude;
+        memory.longitude = latLng.longitude;
+        memory.notes = "I remember I met an old man here with a beard as long as a chair";
+    }
+
+    @Override
     public void OnSaveClicked(Memory memory) {
+        addMarker(memory);
+        mDataSource.createMemory(memory);
+    }
+
+    private void addMarker(Memory memory) {
         Marker marker = mMap.addMarker(new MarkerOptions()
+                .draggable(true)
                 .position(new LatLng(memory.latitude, memory.longitude)));
 
         mMemories.put(marker.getId(), memory);
-        mDataSource.createMemory(memory);
     }
 
     private void addGoogleAPIClient(){
