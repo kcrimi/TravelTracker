@@ -1,9 +1,10 @@
 package com.example.kevin.traveltracker;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,7 +15,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,
@@ -23,6 +29,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     private static final String TAG = "Main Activity";
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
+    private HashMap<String, Memory> mMemories = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +63,33 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.setOnMapClickListener(this);
+        mMap.setInfoWindowAdapter(new MarkerAdapter(getLayoutInflater(), mMemories));
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        mMap.addMarker(new MarkerOptions()
-        .position(latLng)
-        .title("Our Title")
-        .snippet("My little Snippet"));
+        Geocoder geocoder = new Geocoder(this);
+        List<Address> matches = null;
+        try {
+            matches = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Address bestMatch = (matches.isEmpty()) ? null : matches.get(0);
+        int maxLine = bestMatch.getMaxAddressLineIndex();
+
+        Memory memory = new Memory();
+        memory.city = bestMatch.getAddressLine(maxLine - 1);
+        memory.country = bestMatch.getAddressLine(maxLine);
+        memory.latitude = latLng.latitude;
+        memory.longitude = latLng.longitude;
+        memory.notes = "I remember I met an old man here with a beard as long as a chair";
+
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(latLng));
+
+        mMemories.put(marker.getId(), memory);
     }
 
     @Override
