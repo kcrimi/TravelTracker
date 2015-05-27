@@ -46,9 +46,8 @@ public class MemoryDialogFragment extends DialogFragment {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setView(mView)
-                .setTitle("Memory")
-                .setMessage(mMemory.city+" "+mMemory.country)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setTitle(getString(R.string.memory_dialog_title))
+                .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         EditText notesView = (EditText) mView.findViewById(R.id.notes);
@@ -56,7 +55,7 @@ public class MemoryDialogFragment extends DialogFragment {
                         mListener.OnSaveClicked(mMemory);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mListener.OnCancelClicked(mMemory);
