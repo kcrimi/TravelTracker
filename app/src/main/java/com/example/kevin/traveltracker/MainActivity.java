@@ -1,10 +1,13 @@
 package com.example.kevin.traveltracker;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -85,6 +88,25 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         memory.latitude = latLng.latitude;
         memory.longitude = latLng.longitude;
         memory.notes = "I remember I met an old man here with a beard as long as a chair";
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Memory")
+                .setMessage("You want to create a new memory?")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "Clicked OK");
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "Clicked Cancel");
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng));
