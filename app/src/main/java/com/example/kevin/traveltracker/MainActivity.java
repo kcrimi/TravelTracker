@@ -30,6 +30,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         GoogleMap.OnMapClickListener,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "Main Activity";
+    private static final String MEMORY_DIALOG_TAG = "MemoryDialog";
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private HashMap<String, Memory> mMemories = new HashMap<>();
@@ -89,24 +90,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         memory.longitude = latLng.longitude;
         memory.notes = "I remember I met an old man here with a beard as long as a chair";
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Memory")
-                .setMessage("You want to create a new memory?")
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Clicked OK");
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "Clicked Cancel");
-                    }
-                });
-
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        new MemoryDialogFragment().show(getFragmentManager(), MEMORY_DIALOG_TAG);
 
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng));
