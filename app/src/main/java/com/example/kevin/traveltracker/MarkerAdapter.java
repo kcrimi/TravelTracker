@@ -1,7 +1,9 @@
 package com.example.kevin.traveltracker;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.kevin.traveltracker.R;
@@ -14,6 +16,8 @@ import java.util.HashMap;
  * Created by kevin on 5/26/15.
  */
 public class MarkerAdapter implements GoogleMap.InfoWindowAdapter{
+
+    private static final String TAG = "MarkerAdapter";
 
     private LayoutInflater mLayoutInflater;
     private View mView;

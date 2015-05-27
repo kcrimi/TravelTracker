@@ -30,7 +30,7 @@ import javax.sql.DataSource;
 
 public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,MemoryDialogFragment.Listener,
-        GoogleMap.OnMarkerDragListener,
+        GoogleMap.OnMarkerDragListener,GoogleMap.OnInfoWindowClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private static final String TAG = "Main Activity";
@@ -74,6 +74,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         mMap.setOnMapClickListener(this);
         mMap.setInfoWindowAdapter(new MarkerAdapter(getLayoutInflater(), mMemories));
         mMap.setOnMarkerDragListener(this);
+        mMap.setOnInfoWindowClickListener(this);
         List<Memory> memories = mDataSource.getAllMemories();
         for ( Memory memory: memories) {
             addMarker(memory);
@@ -132,6 +133,11 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         updateMemoryPosition(marker.getPosition(),memory);
         mDataSource.updateMemory(memory);
 
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Log.d(TAG, "window clicked");
     }
 
     private void updateMemoryPosition(LatLng latLng, Memory memory) {
