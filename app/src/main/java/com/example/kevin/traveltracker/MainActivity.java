@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -77,7 +78,20 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         mMap.setInfoWindowAdapter(new MarkerAdapter(getLayoutInflater(), mMemories));
         mMap.setOnMarkerDragListener(this);
         mMap.setOnInfoWindowClickListener(this);
-        List<Memory> memories = mDataSource.getAllMemories();
+        new AsyncTask<Void,Void,List<Memory>>(){
+            @Override
+            protected List<Memory> doInBackground(Void... params) {
+                return mDataSource.getAllMemories();
+            }
+
+            @Override
+            protected void onPostExecute(List<Memory> memories) {
+                onFetchedMemories(memories);
+            }
+        }.execute();
+    }
+
+    private void onFetchedMemories(List<Memory> memories) {
         for ( Memory memory: memories) {
             addMarker(memory);
         }
