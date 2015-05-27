@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 
 public class MainActivity extends ActionBarActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,MemoryDialogFragment.Listener,
@@ -35,6 +37,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private HashMap<String, Memory> mMemories = new HashMap<>();
+    private MemoriesDataSource mDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +95,8 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         memory.notes = "I remember I met an old man here with a beard as long as a chair";
 
         MemoryDialogFragment.newInstance(memory).show(getFragmentManager(), MEMORY_DIALOG_TAG);
+
+        mDataSource = new MemoriesDataSource(this);
     }
 
     @Override
@@ -127,6 +132,7 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
                 .position(new LatLng(memory.latitude, memory.longitude)));
 
         mMemories.put(marker.getId(), memory);
+        mDataSource.createMemory(memory);
     }
 
     private void addGoogleAPIClient(){
