@@ -62,6 +62,16 @@ public class MemoriesDataSource {
                 );
     }
 
+    public void deleteMemory(Memory memory){
+        String[] whereArgs = {String.valueOf(memory.id)};
+
+        mDbHelper.getWritableDatabase().delete(
+                mDbHelper.MEMORIES_TABLE,
+                mDbHelper.COLUMN_ID+"=?",
+                whereArgs
+        );
+    }
+
     private Memory cursorToMemory(Cursor cursor){
         Memory memory = new Memory();
         memory.id = cursor.getLong(0);

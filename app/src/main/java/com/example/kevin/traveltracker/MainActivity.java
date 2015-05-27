@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -113,6 +115,12 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public void OnSaveClicked(Memory memory) {
+        addMarker(memory);
+        mDataSource.createMemory(memory);
+    }
+
+    @Override
     public void OnCancelClicked(Memory memory) {
 
     }
@@ -130,14 +138,27 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
     @Override
     public void onMarkerDragEnd(Marker marker) {
         Memory memory = mMemories.get(marker.getId());
-        updateMemoryPosition(marker.getPosition(),memory);
+        updateMemoryPosition(marker.getPosition(), memory);
         mDataSource.updateMemory(memory);
 
     }
 
     @Override
-    public void onInfoWindowClick(Marker marker) {
-        Log.d(TAG, "window clicked");
+    public void onInfoWindowClick(final Marker marker) {
+        final Memory memory = mMemories.get(marker.getId());
+        String[] actions = {"Edit","Delete"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(memory.city+", "+memory.country)
+                .setItems(actions, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which ==1){
+                            marker.remove();
+                            mDataSource.deleteMemory(memory);
+                        }
+                    }
+                });
+        builder.create().show();
     }
 
     private void updateMemoryPosition(LatLng latLng, Memory memory) {
@@ -157,12 +178,6 @@ public class MainActivity extends ActionBarActivity implements OnMapReadyCallbac
         memory.latitude = latLng.latitude;
         memory.longitude = latLng.longitude;
         memory.notes = "I remember I met an old man here with a beard as long as a chair";
-    }
-
-    @Override
-    public void OnSaveClicked(Memory memory) {
-        addMarker(memory);
-        mDataSource.createMemory(memory);
     }
 
     private void addMarker(Memory memory) {
